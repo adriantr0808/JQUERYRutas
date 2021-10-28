@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apuestas</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'>
+</head>
+
+<body>
+    <div id='menu'></div>
+    <div class='container text-center '>
+        <button class='btn btn-danger mt-4' id='botonapuesta'>Realizar apuesta</button>
+        <table class='table table-dark table-striped mt-4'>
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Resultado</th>
+                    <th>Fecha</th>
+                    <th>Eliminar</th>
+                    <th>Modificar</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+    <script src='./jquery-3.6.0.min.js'></script>
+    <script>
+        $(document).ready(function () {
+            $("#menu").load("./MenuEquipos.html");
+            var urlchampions = 'https://apichampions.azurewebsites.net';
+            var request = '/api/Apuestas';
+
+            $.ajax({
+                'url': urlchampions + request,
+                'type': 'GET',
+                success: function (data) {
+                    $.each(data, function (index, ap) {
+                        var tr = $('<tr>');
+                        var tdusu = $('<td>', {
+                            'text': ap.usuario
+                        });
+                        var tdresul = $('<td>', {
+                            'text': ap.resultado
+                        });
+                        var tdfecha = $('<td>', {
+                            'text': ap.fecha
+                        });
+                        var tdelim= $('<td>');
+                            var tdmod= $('<td>');
+    
+                        var botonEliminar = $('<button>', {
+                            'text': 'X',
+                            'class': 'btn btn-danger '
+                        });
+
+                        botonEliminar.click(function () {
+                            window.location.replace("./EliminarApuesta.html?idAp="+ap.idApuesta);
+                        });
+
+                        var botonModificar = $('<button>',{
+                            'text':'Edit',
+                            'class':'btn btn-warning '
+                        });
+
+                        botonModificar.click(function(){
+                            window.location.replace("./EditarApuesta.html?idAp="+ap.idApuesta);
+                        });
+
+                         tdelim.append(botonEliminar);
+                         tdmod.append(botonModificar);
+
+                        tr.append(tdusu);
+                        tr.append(tdresul);
+                        tr.append(tdfecha);
+                        tr.append(tdelim);
+                        tr.append(tdmod);
+                        
+
+                        $('.table tbody').append(tr);
+                    });
+                }
+            })
+        });
+
+        $('#botonapuesta').click(function () {
+            window.location.replace("./InsertarApuesta.html");
+        });
+    </script>
+</body>
+
+</html>

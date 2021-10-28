@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div id='menu'></div>
+ 
+    <div class='container mt-5 bg-secondary text-light p-4 border border-dark'>
+        <form>
+            <div class='mb-3 form-group row'>
+                <label>Introducir Usuario: </label>
+                <input type='text' class='form-control' id='cajaUsuario'/>
+            </div>
+            <div class='mb-3 form-group row'>
+                <label>Real Madrid: </label>
+                <input type='number' class='form-control' id='cajaLocal' />
+            </div>
+            <div class='mb-3 form-group row'>
+                <label>Atletico de Madrid: </label>
+                <input type='number' class='form-control' id='cajaVisitante'/>
+            </div>
+            <div class='mb-3 form-group row'>
+                <label>Introducir fecha: </label>
+                <input type='date' class='form-control' id='cajaFecha' />
+            </div>
+            <button class='btn btn-warning ' id='Apostar'>Apostar</button>
+        </form>
+    </div>
+   <script src='jquery-3.6.0.min.js'></script>
+   <script>
+       $(document).ready(function(){
+        $("#menu").load("./MenuEquipos.html");
+
+        $('form').submit(function(e){
+            e.preventDefault();
+            var usu = $('#cajaUsuario').val();
+            var loc = $('#cajaLocal').val();
+            var vis = $('#cajaVisitante').val();
+            var fecha = $('#cajaFecha').val();
+            
+            var apuesta = new Object();
+            apuesta.idApuesta=0;
+            apuesta.usuario = usu;
+            apuesta.resultado = loc +"-"+vis;
+            apuesta.fecha = fecha;
+
+            var json = JSON.stringify(apuesta);
+            //console.log(json);
+
+            var urlchampions = 'https://apichampions.azurewebsites.net';
+            var request = '/api/Apuestas';
+
+            $.ajax({
+                'url': urlchampions + request,
+                    'type': 'POST',
+                    'data': json,
+                    'contentType': 'application/json',
+                    success: function () {
+                        window.location.replace("./MostrarApuestas.html");
+                    }
+            });
+        });
+       });
+   </script>
+</body>
+</html>

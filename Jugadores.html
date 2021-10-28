@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href='css/bootstrap.min.css' rel='stylesheet'>
+</head>
+
+<body>
+    <div id="menu"></div>
+    <div class='container m-auto m-5'>
+        <table class='table table-dark table-striped text-center m-auto'>
+            <thead>
+               <tr>
+                   <th>Nombre</th>
+                   <th>Imagen</th>
+                   <th>Detalles</th>
+               </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+    <script src='jquery-3.6.0.min.js'></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#menu").load("./MenuEquipos.html");
+            var queryString = window.location.search;
+            var urlParams = new URLSearchParams(queryString);
+            var idEquipo = urlParams.get('idEq');
+           // var nom = urlParams.get('nom');
+
+            //console.log(nom);
+           
+           var urlchampions = 'https://apichampions.azurewebsites.net';
+           var request = '/api/Jugadores/JugadoresEquipo/'+idEquipo;
+            
+            $.ajax({
+                'url': urlchampions + request,
+                'type': 'GET',
+                success: function(data){
+                    //console.log(data)
+                   $.each(data, function(index, jug){
+                       var tr = $('<tr>');
+                        var tdnombre = $('<td>',{
+                            'text':jug.nombre
+                        });
+                        var tdimg = $('<td>');
+                        
+                        var img = $('<img>',{
+                            'src':jug.imagen
+                        });
+
+                        tdimg.append(img);
+
+                        var tddet = $('<td>');
+                        
+                        var boton = $('<button>',{
+                            'text':'Detalles',
+                            'data-id':jug.idJugador,
+                            'class':'btn btn-warning mt-5'
+                        });
+
+                        boton.click(function(){
+                            window.location.replace("./DetallesJugador.html?idJug=" + jug.idJugador);
+                        });
+
+                        tddet.append(boton);
+
+                        tr.append(tdnombre);
+                        tr.append(tdimg);
+                        tr.append(tddet);
+
+                        $('.table tbody').append(tr);
+                   })
+                }
+            });
+     });
+    </script>
+</body>
+
+</html>

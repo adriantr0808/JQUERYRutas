@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'>
+</head>
+
+<body>
+    <div id='menu'></div>
+    <script src='./jquery-3.6.0.min.js'></script>
+
+    <div class="card container m-5 text-center">
+        <div class="card-header">
+
+        </div>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+
+            <a href="./Home.html" class="btn btn-primary">Volver</a>
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            $("#menu").load("./MenuEquipos.html");
+        })
+        var queryString = window.location.search;
+        var urlParams = new URLSearchParams(queryString);
+        var idEquipo = urlParams.get('id');
+        //console.log(idEquipo);
+        var urlchampions = 'https://apichampions.azurewebsites.net';
+        var request = '/api/Equipos/' + idEquipo;
+        console.log(request);
+
+        $.ajax({
+            'url': urlchampions + request,
+            'type': 'GET',
+            success: function (data) {
+                $('.card-header').append(data.nombre);
+                $('.card-title').append('<img height="200px" src=' + data.imagen + '>')
+                $('.card-text').append(data.descripcion);
+                var a = $('<a>', {
+                    'href': './Jugadores.html?idEq=' + data.idEquipo ,//+'&&nom='+data.nombre,
+                    'class': 'btn btn-danger',
+                    'text': 'Jugadores'
+                });
+
+                $('.card-body').append(a);
+
+            }
+        })
+    </script>
+
+</body>
+
+</html>

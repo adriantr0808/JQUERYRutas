@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apuestas</title>
+</head>
+
+<body>
+    <div id='menu'></div>
+    <div class='text-center'>
+        <h1>Elimiar apuesta</h1>
+       <div id='apuesta'></div>
+        <button class='btn btn-danger mt-2'>Eliminar Apuesta</button>
+    </div>
+    <script src='jquery-3.6.0.min.js'></script>
+    <script>
+        $(document).ready(function () {
+          
+            $("#menu").load("./MenuEquipos.html");
+            var queryString = window.location.search;
+            var urlParams = new URLSearchParams(queryString);
+            var idApuesta = urlParams.get('idAp');
+            var urlchampions = 'https://apichampions.azurewebsites.net';
+            cargarApuesta();
+
+            $('.btn').click(function () {
+                var request = '/api/Apuestas/' + idApuesta;
+                console.log(idApuesta);
+                $.ajax({
+                    'url': urlchampions + request,
+                    'type': 'DELETE',
+                    success: function () {
+                        window.location.replace("./MostrarApuestas.html");
+                    }
+                })
+            });
+
+            function cargarApuesta() {
+                var request = '/api/Apuestas/' + idApuesta;
+                console.log(idApuesta);
+                $.ajax({
+                    'url': urlchampions + request,
+                    'type': 'GET',
+                    success: function (data) {
+                       var h2 = $('<h2>',{
+                            'text': '¿Estas seguro de que quieres eliminar la apuesta con usuario '+data.usuario+' y resultado '+data.resultado+' ?'
+                        });
+
+                       $('#apuesta').append(h2);
+                  
+                    }
+                })
+            }
+        })
+    </script>
+</body>
+
+</html>

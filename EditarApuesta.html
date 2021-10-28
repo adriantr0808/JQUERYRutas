@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Apuesta</title>
+    <link href='css/bootstrap.min.css' rel='stylesheet'>
+</head>
+
+<body>
+    <div id="menu"></div>
+    <h1 class='text-center'>Modificar apuesta</h1>
+    <div class='container mt-5 bg-secondary text-light p-4 border border-dark'>
+        <form>
+            <div class='mb-3 form-group row'>
+                <label>Actualizar Usuario: </label>
+                <input type='text' class='form-control' id='cajaUsuario' />
+            </div>
+            <div class='mb-3 form-group row'>
+                <label>Resultado </label>
+                <input type='text' class='form-control' id='cajaResultado' />
+            </div>
+            <div class='mb-3 form-group row'>
+                <label>Introducir fecha: </label>
+                <input type='date' class='form-control' id='cajaFecha' />
+            </div>
+            <button class='btn btn-warning ' id='actualizarApuesta'>Actualizar Apuesta</button>
+        </form>
+    </div>
+    <script src='jquery-3.6.0.min.js'></script>
+    <script>
+        $(document).ready(function () {
+            $("#menu").load("./MenuEquipos.html");
+            var queryString = window.location.search;
+            var urlParams = new URLSearchParams(queryString);
+            var idApuesta = urlParams.get('idAp');
+            var urlchampions = 'https://apichampions.azurewebsites.net';
+            cargarApuesta();
+
+            $('form').submit(function (e) {
+                e.preventDefault();
+                var request = '/api/Apuestas';
+                var apuesta = new Object();
+
+                apuesta.idApuesta = parseInt(idApuesta);
+                apuesta.usuario = $('#cajaUsuario').val();
+                apuesta.resultado = $('#cajaResultado').val();
+                apuesta.fecha = $('#cajaFecha').val();
+
+                var json = JSON.stringify(apuesta);
+                console.log(json);
+
+                $.ajax({
+                    'url': urlchampions + request,
+                    'type': 'PUT',
+                    'data': json,
+                    'contentType': "application/json",
+                    success: function (data) {
+                        window.location.replace("./MostrarApuestas.html");
+                    }
+                })
+            });
+
+            function cargarApuesta() {
+                var request = '/api/Apuestas/' + idApuesta;
+                console.log(idApuesta);
+                $.ajax({
+                    'url': urlchampions + request,
+                    'type': 'GET',
+                    success: function (data) {
+                        $('#cajaUsuario').val(data.usuario);
+                        $('#cajaResultado').val(data.resultado);
+                        $('#cajaFecha').val(data.fecha);
+
+
+
+                    }
+                })
+            }
+        });
+    </script>
+</body>
+
+</html>

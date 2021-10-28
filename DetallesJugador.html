@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="menu"></div>
+    <div class="card container m-5 text-center">
+        <div class="card-header ">
+
+        </div>
+        <div class="card-body">
+            <div id='imagen'></div>
+            <h5 class="card-title mt-2 "></h5>
+            <p class="card-text"></p>
+
+           
+        </div>
+    </div>
+    <script src='./jquery-3.6.0.min.js'></script>
+    <script>
+        $(document).ready(function(){
+            $("#menu").load("./MenuEquipos.html");
+            var queryString = window.location.search;
+            var urlParams = new URLSearchParams(queryString);
+            var idJugador = urlParams.get('idJug');
+            var urlchampions = 'https://apichampions.azurewebsites.net';
+            var request = '/api/Jugadores/'+idJugador;
+            console.log(idJugador);
+            $.ajax ({
+                'url':urlchampions+request,
+                'type':'GET',
+                success: function(data){
+                    $('.card-header').append(data.nombre);
+                   var img =  $('<img>',{
+                        'src':data.imagen
+                    });
+                    $('#imagen').append(img);
+                    $('.card-title').append("Posición: "+data.posicion);
+                    $('.card-text').append("Fecha de nacimiento: "+data.fechaNacimiento)
+                    
+
+                    var boton = $('<button>',{
+                        'text': 'Jugadores',
+                        'class': 'btn btn-danger'
+                    });
+
+                      boton.click(function(){
+                         // console.log(data.idEquipo);
+                        window.location.replace("./Jugadores.html?idEq=" + data.idEquipo);
+                    });
+
+                    $('.card-body').append(boton);
+
+                   
+                }
+            });
+            
+
+        });
+    </script>
+</body>
+</html>
